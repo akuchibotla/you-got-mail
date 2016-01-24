@@ -24,8 +24,13 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 	username_chars = set([char for char in string.ascii_lowercase] + [str(i) for i in range(10)] + ['_', '-', '.'])
 
 	# Adds usernames to the username set
-	def add_username(username):
-		username = username.lower()
+	def add_username(username, link=False):
+		username = username.lower().replace('-', '_')
+		if link:
+			if username in usernames:
+				usernames[username] += 3
+			else:
+				usernames[username] = 3
 		if username in usernames:
 			usernames[username] += 1
 		else:
@@ -40,8 +45,8 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 			while end < len(url) and url[end] in username_chars:
 				end += 1
 
-			username = url[start:end + 1]
-			add_username(username)
+			username = url[start:end]
+			add_username(username, link=True)
 
 	for url in [(linkedin_url, 'linkedin.com/in/'), (angellist_url, 'angel.co/'), (twitter_url, 'twitter.com/')]:
 		if url[0]:
@@ -107,9 +112,8 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 			return 0.1 # symbols only
 
 	for username in usernames:
-		first = usernames[username]
 		usernames[username] *= username_weight(username)
-		print username, 'first has weight', first, 'now has weight', username_weight(username), 'resulting in', usernames[username]
+		print username, usernames[username]
 
 	return usernames
 		
