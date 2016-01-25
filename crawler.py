@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup as soup
-from checker import strip_domain
+from generator import strip_domain
 import urllib2
 import string
 
