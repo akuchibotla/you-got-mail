@@ -1,5 +1,9 @@
 # you-got-mail
 This is a tool used to determine emails based on the name of a person and a couple URLs of various social media accounts (namely LinkedIn, AngelList, Twitter)
+
+### Dependencies
+#### BeautifulSoup 4
+
 ### Social Media Username Restrictions
 ##### LinkedIn
 (a-z), (0-9)

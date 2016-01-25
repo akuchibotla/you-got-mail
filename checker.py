@@ -1,25 +1,41 @@
 from bs4 import BeautifulSoup as soup
+from email_verifier import verify_email
 import string
 import urllib2
 import re
 
+url_chars = set([char for char in string.ascii_lowercase] + ['.'])
+
 # Utility function that is called throughout program
 def strip_domain(domain):
-	start = 7
-	if domain[4] == 's':
-		if domain[8:11] == 'www':
-			start = 12
-		else:
-			start = 8
-	elif domain[7:10] == 'www':
-		start = 11
-	end = start
-	while end < len(domain) and domain[end] != '/':
-		end += 1
-	return domain[start:end]
+	if len(domain) > 3:
+		start = 7
+		if domain[4] == 's':
+			if domain[8:11] == 'www':
+				start = 12
+			else:
+				start = 8
+		elif domain[7:10] == 'www':
+			start = 11
+		end = start
+		while end < len(domain) and domain[end] in url_chars:
+			end += 1
+		return domain[start:end]
+
+# Finds any emails in domain source code
+def parse_HTML(html):
+	emails = list()
+	s = soup(html, 'html.parser')
+	for s_elem in s.strings:
+		match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", s_elem)
+		if match:
+			emails.append(match.group(0).encode('utf-8').strip())
+
+	# Return emails
+	return [email.string.encode('utf-8').strip() for email in s.select('a[href^=mailto]')] + emails
 
 # Generates usernames with a higher weightage for more probable usernames
-def username_generator(first_name, last_name, middle_name=None, domains=[], linkedin_url=None, angellist_url=None, twitter_url=None):
+def username_generator(first_name, last_name, middle_name=None, domains=[], linkedin_url=None, angellist_url=None, twitter_url=None, github_url=None):
 	usernames = dict()
 	username_chars = set([char for char in string.ascii_lowercase] + [str(i) for i in range(10)] + ['_', '-', '.'])
 
@@ -48,7 +64,7 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 			username = url[start:end]
 			add_username(username, link=True)
 
-	for url in [(linkedin_url, 'linkedin.com/in/'), (angellist_url, 'angel.co/'), (twitter_url, 'twitter.com/')]:
+	for url in [(linkedin_url, 'linkedin.com/in/'), (angellist_url, 'angel.co/'), (twitter_url, 'twitter.com/'), (github_url, 'github.com/')]:
 		if url[0]:
 			extract_username(url[0], url[1])
 
@@ -80,6 +96,8 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 		add_username(first_name[0] + '.' + middle_name[0] + '.' + last_name)
 
 	for domain in domains:
+		if domain[:4] != 'http':
+			domain = 'http://' + domain
 		stripped_domain = strip_domain(domain)
 		add_username(stripped_domain[:stripped_domain.index('.')])
 
@@ -113,47 +131,69 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 
 	for username in usernames:
 		usernames[username] *= username_weight(username)
-		print username, usernames[username]
 
 	return usernames
 		
 # Generates potential email addresses
-def email_generator(usernames, domains):
+def email_generator(usernames, domains=[], links=[]):
 	emails = dict()
 	max_confidence = max(usernames.values())
 	common_domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'aol.com']
 
 	username_from_email = lambda email: email[:email.index('@')]
 
-	# Finds any emails in domain source code
-	def parse_HTML(html):
-		s = soup(html)
-		for string in s.strings:
-			match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", string)
-			if match:
-				emails[match.group(0)] = 1
-		# If any emails are directly linked on a domain,
-		# it is highly probable that it's the right email
-		for email in s.select('a[href^=mailto]'):
-			emails[email.string] = max_confidence
-
 	for domain in domains:
 		if domain[:4] != 'http':
 			domain = 'http://' + domain
 		# Might not have permission to scrape
 		try:
-			resp = urllib2.urlopen(domain).read()
-			parse_HTML(resp)
+			internal_links = crawl(domain)
+			for l in internal_links:
+				resp = urllib2.urlopen(l).read()
+				parsed_emails = parse_HTML(resp)
+				for email in parsed_emails:
+					emails[email] = max_confidence
 		except:
 			pass
+
 		# Common emails of people with their own domains
 		stripped_domain = strip_domain(domain)
 		emails['admin@' + stripped_domain] = 0.5
 		emails['info@' + stripped_domain] = 0.5
 		emails['me@' + stripped_domain] = 0.5
-		for username in usernames:
-			emails[username + '@' + stripped_domain] = usernames[username]
+
+	for link in links:
+		if link[:4] != 'http':
+			link = 'http://' + link
+		# Might not have permission to scrape
+		try:
+			print 'Trying', link
+			resp = urllib2.urlopen(link).read()
+			print 'Successfully opened', link
+			parsed_emails = parse_HTML(resp)
+			print 'Successfully parsed', link, 'found', set(parsed_emails)
+			for email in set(parsed_emails):
+				if email in emails:
+					emails[email] *= 1.5
+				else:
+					emails[email] = max_confidence
+		except:
+			print 'Unable to parse', link
 
 	for username in usernames:
 		for domain in common_domains:
-			emails[username + '@' + common_domains] = usernames[username]
+			email = username + '@' + domain
+			if email in emails:
+				emails[username + '@' + domain] += usernames[username]
+			else:	
+				emails[username + '@' + domain] = usernames[username]
+
+	return emails
+
+# ug = username_generator(first_name='Anand', last_name='Kuchibotla', linkedin_url='linkedin.com/in/akuchibotla', twitter_url='twitter.com/AKOnTheMic', angellist_url='angel.co/anand-kuchibotla', domains=['akuchibotla.com'], github_url='github.com/akuchibotla/')
+# print ug
+# e = email_generator(usernames=ug, domains=['akuchibotla.com'], links=['linkedin.com/in/akuchibotla', 'twitter.com/AKOnTheMic', 'angel.co/anand-kuchibotla', 'github.com/akuchibotla/'])
+# sorts = [(key, e[key]) for key in e]
+# sorts.sort(key=lambda x: -x[1])
+# for s in sorts:
+# 	print s
