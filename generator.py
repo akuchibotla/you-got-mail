@@ -1,35 +1,20 @@
 from bs4 import BeautifulSoup as soup
-from email_verifier import verify_email
+from email_verifier import verify_email # Change to mock_email_verifier if testing
+from crawler import crawl
+from utils import strip_domain
 import string
 import urllib2
 import re
-
-url_chars = set([char for char in string.ascii_lowercase] + ['.'])
-
-# Utility function that is called throughout program
-def strip_domain(domain):
-	if len(domain) > 3:
-		start = 7
-		if domain[4] == 's':
-			if domain[8:11] == 'www':
-				start = 12
-			else:
-				start = 8
-		elif domain[7:10] == 'www':
-			start = 11
-		end = start
-		while end < len(domain) and domain[end] in url_chars:
-			end += 1
-		return domain[start:end]
 
 # Finds any emails in domain source code
 def parse_HTML(html):
 	emails = list()
 	s = soup(html, 'html.parser')
 	for s_elem in s.strings:
-		match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", s_elem)
-		if match:
-			emails.append(match.group(0).encode('utf-8').strip())
+		for word in s_elem.split():
+			match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", word)
+			if match:
+				emails.append(match.group(0).encode('utf-8').strip())
 
 	# Return emails
 	return [email.string.encode('utf-8').strip() for email in s.select('a[href^=mailto]')] + emails
@@ -101,6 +86,7 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 		stripped_domain = strip_domain(domain)
 		add_username(stripped_domain[:stripped_domain.index('.')])
 
+	# Weights usernames on their content
 	def username_weight(username):
 		letters = False
 		numbers = False
