@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup as soup
 from utils import strip_domain
 import urllib2
-import string
 
 def is_website(url):
 	domain = strip_domain(url)

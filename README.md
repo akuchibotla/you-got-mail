@@ -49,10 +49,16 @@ Here, symbols refer to exclusively underscores and periods. The reason for this 
 
 ### Workflow
 1) Information is entered by the user (the more information, the better)
+
 2) Possible usernames are generated via link usernames and via hardcoding popular usernames for first and last name combinations (such as "firstname_lastname")
+
 3) These usernames are weighted by content as described above
-4) 1) Domains are crawled, scraped, and regex is used to determine whether or not emails exist within them
-5) 
+
+4) Domains and social media accounts are crawled, scraped, and regex is used to determine whether or not emails exist within them and in the case that they do, they are weighted highly
+
+5) Usernames get linked to the most popular email providers (GMail, Yahoo, Hotmail, AOL) as well as personal domains in order to generate emails
+
+6) Emails are validated and the ones that are valid are printed out in decreasing order of confidence (i.e. the most probable emails are printed first)
 
 ### How To Use
 Make sure you have obtained an Email Hippo key and have inputted it into `email_verifier.py` where it says `YOUR_KEY_HERE`
