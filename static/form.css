@@ -1,0 +1,55 @@
+body {
+	background-color: #E9ECE5;
+}
+
+h1 {
+	font-family: 'Kaushan Script', cursive;
+	text-align: center;
+	font-size: 100px;
+	color: #3B3A36;
+}
+
+form {
+	margin: 0 auto;
+	width: 350px;
+}
+
+input[type=text]{
+    padding: 5px; 
+    margin: 10px 0px 5px 25px;
+    border: 1px solid #B3C2BF;
+    font-size: 13px;
+}
+
+input[type=text]:focus {
+    border-color: #C0DFD9;
+}
+
+input[type=submit] {
+    padding: 5px 15px; 
+    background: #B3C2BF; 
+    border: 0 none;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;  
+    margin-top: 10px;
+    float: right;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 20px;
+}
+
+input[type=submit]:hover {
+	background: #C0DFD9 
+}
+
+.left {
+	margin-left: 0px !important;
+}
+
+.required {
+	margin-right: -8px;
+}
+
+#domains {
+	width: 346px;
+}
