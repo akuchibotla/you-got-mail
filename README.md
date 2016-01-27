@@ -6,6 +6,8 @@ BeautifulSoup 4
 
 Flask
 
+barIndicator (https://github.com/kapantzak/barIndicator)
+
 ### API Usage
 Email Hippo (Obtain a free key for up to 200 requests at https://www.emailhippo.com)
 
