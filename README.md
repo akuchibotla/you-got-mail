@@ -4,6 +4,8 @@ This is a tool used to determine emails based on the name of a person and a coup
 ### Dependencies
 BeautifulSoup 4
 
+Flask
+
 ### API Usage
 Email Hippo (Obtain a free key for up to 200 requests at https://www.emailhippo.com)
 
@@ -60,25 +62,23 @@ Here, symbols refer to exclusively underscores and periods. The reason for this 
 
 6) Emails are validated and the ones that are valid are printed out in decreasing order of confidence (i.e. the most probable emails are printed first)
 
-### How To Use
+### Setup
 Make sure you have obtained an Email Hippo key and have inputted it into `email_verifier.py` where it says `YOUR_KEY_HERE`
 
-Here is the most basic example:
+Install Flask
 ```
-python -i main.py
->>> main(first_name='John', last_name='Doe')
-```
-With this example, it is hard to determine what the emails are because the name is such a common one. The more information provided, the easier the process becomes. For example, here we have:
-
-```
-python -i main.py
->>> main(first_name='Anand', last_name='Kuchibotla', domains=['akuchibotla.com'], linkedin_url='linkedin.com/in/akuchibotla', angellist_url='angel.co/anand-kuchibotla', github_url='github.com/akuchibotla')
+pip install Flask
 ```
 
-In this example, the correct email is retrieved. Note that though every field except for `first_name` and `last_name` are optional, it is in your best interest to enter as much information as possible.
+Install BeautifulSoup4
+```
+pip install beautifulsoup4
+```
+
+Simply run `python server.py` and visit `http://127.0.0.1:5000/`. That's all!
 
 ### Breakdown of Files
-`main.py` runs the program, as outline above
+`main.py` runs the program, as outlined above (make sure you remove `mock_email_verifier` from the import if you want to utlize the real API)
 
 `generator.py` exposes two functions that generate and weight possible usernames and possible emails from the infromation entered by the user
 

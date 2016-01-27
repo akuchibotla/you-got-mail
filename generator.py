@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup as soup
-from email_verifier import verify_email # Change to mock_email_verifier if testing
 from crawler import crawl
 from utils import strip_domain
 import string
@@ -20,7 +19,7 @@ def parse_HTML(html):
 	return [email.string.encode('utf-8').strip() for email in s.select('a[href^=mailto]')] + emails
 
 # Generates usernames with a higher weightage for more probable usernames
-def username_generator(first_name, last_name, middle_name=None, domains=[], linkedin_url=None, angellist_url=None, twitter_url=None, github_url=None):
+def username_generator(first_name, last_name, middle_name=None, domains=[], linkedin_url=None, angellist_url=None, twitter_url=None, facbeook_url=None, github_url=None):
 	usernames = dict()
 	username_chars = set([char for char in string.ascii_lowercase] + [str(i) for i in range(10)] + ['_', '-', '.'])
 
@@ -49,7 +48,7 @@ def username_generator(first_name, last_name, middle_name=None, domains=[], link
 			username = url[start:end]
 			add_username(username, link=True)
 
-	for url in [(linkedin_url, 'linkedin.com/in/'), (angellist_url, 'angel.co/'), (twitter_url, 'twitter.com/'), (github_url, 'github.com/')]:
+	for url in [(linkedin_url, 'linkedin.com/in/'), (angellist_url, 'angel.co/'), (twitter_url, 'twitter.com/'), (github_url, 'github.com/'), (facbeook_url, 'facebook.com/')]:
 		if url[0]:
 			extract_username(url[0], url[1])
 
