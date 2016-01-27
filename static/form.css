@@ -1,5 +1,5 @@
 body {
-	background-color: #E9ECE5;
+	background-color: #e3e3e3;
 }
 
 h1 {
@@ -52,4 +52,10 @@ input[type=submit]:hover {
 
 #domains {
 	width: 346px;
+}
+
+#loading {
+	width: 546px;
+	margin-left: auto;
+	text-align: center;
 }
