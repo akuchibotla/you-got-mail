@@ -11,6 +11,10 @@ function getFormData() {
 		reqData[name] = $.trim(value);
 	}
 
+	if (reqData['domains']) {
+		reqData['domains'] = reqData['domains'].replace(/ /g,'')
+	}
+
 	if ((reqData['firstname'] == '') || (reqData['lastname'] == '')) {
 		if (reqData['firstname'] == '') {
 			$('#firstname').css({'background-color': '#FFB2B2'});
@@ -39,7 +43,12 @@ function getFormData() {
 	}
 
 	function showData(data) {
-		$('#loading').fadeOut();
+		$('#loading').fadeOut(function() {
+			setTimeout(showBars(data), 1000)
+		});
+	}
+
+	function showBars(data) {
 		var emails = []
 		var confidence = [];
 		for (var i = 0; i < data['results'].length; i++) {
@@ -60,11 +69,11 @@ function getFormData() {
 				horLabelPos: 'topRight',
 				colorRange:true,
 				colorRangeLimits: {
-					optimal: '91-100',
-					newRangeOne: '61-90-rgb(241,144,40)',
-					newRangeTwo: '41-60-green',
-					newRangeThree: '21-40-#4aa64f',
-					critical: '0-20'
+					optimal: '95-100-green',
+					newRangeOne: '85-100-#4AA64F',
+					newRangeTwo: '50-85-yellow',
+					newRangeThree: '25-50-#FFBD5C',
+					critical: '0-25-#FF3333'
 				}
 			});
 		}
