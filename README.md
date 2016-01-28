@@ -2,16 +2,16 @@
 This is a tool used to determine emails based on the name of a person and a couple URLs of various social media accounts (supported accounts are LinkedIn, AngelList, GitHub, and Twitter)
 
 ### Dependencies
-BeautifulSoup 4
+[BeautifulSoup 4](http://www.crummy.com/software/BeautifulSoup/)
 
-Flask
+[Flask](https://github.com/mitsuhiko/flask)
 
-barIndicator (https://github.com/kapantzak/barIndicator)
+[barIndicator](https://github.com/kapantzak/barIndicator)
 
 ### API Usage
-Email Hippo (Obtain a free key for up to 200 requests at https://www.emailhippo.com)
+[Email Hippo](https://www.emailhippo.com) - You may obtain a free key for up to 200 requests
 
-If you would like to use another API, feel free to replace `email_verifier.py` to whatever you'd like
+If you would like to use another API, feel free to replace relevant code in `email_verifier.py` to whatever you'd like
 
 ### Social Media Username Restrictions
 ##### LinkedIn
@@ -92,5 +92,10 @@ Simply run `python server.py` and visit `http://127.0.0.1:5000/`. That's all!
 
 `utils.py` has some common functions used throughout the program
 
-### Points of Improvement
-The time it takes to accomplish step 4 above is the biggest bottleneck for performance. I am open to suggestions as to how this can be improved.
+### Points for Improvement
+- The time it takes to accomplish step 4 above is the biggest bottleneck for performance. I am open to suggestions as to how this can be improved.
+- It would be ideal if it were possible to ping the mail servers directly rather than use an API. Unfortunately this solution requires many edge cases (Yahoo MX server responses respond with the same message regardless of whether or not an email is valid whereas GMail is very descriptive).
+- Huge sources of information (namely LinkedIn) cannot be scraped and their terms & conditions don't seem to allow usage for this kind of application.
+- URLs sometimes need to be resolved. The "stub" method I use here is great for the standard URL formats of those social media websites but doesn't work for a couple edge cases. Assuming the user inputs a standard URL (which they will 90% do anyways), it shouldn't be a problem but is still something to improve on.
+- The weightage is pretty arbitrary and just based on how I personally view emails. I am open to suggestions as to how these can be less random and more mathematical as well.
+- The more common the name is, the higher chance there is of having a username like "john_doe_1994". I weight these emails low compared to "john_doe" and "jdoe" for example and I'm not sure if this is the best way to go about this. If there is any way to measure how "common" an email is, that would be great.

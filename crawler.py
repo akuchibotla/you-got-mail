@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup as soup
 from utils import strip_domain
 import urllib2
 
+LIMIT = 10 # Limit for how many pages of a website should be parsed
+
 def is_website(url):
 	domain = strip_domain(url)
 	url = url[url.index(domain) + len(domain):]
@@ -18,7 +20,7 @@ def crawl(url):
 	visited = set()
 	fringe = [url]
 
-	while len(fringe) > 0:
+	while len(fringe) > 0 and len(visited) <= LIMIT:
 		curr = fringe.pop(0)
 		if curr not in visited:
 			visited.add(curr)
