@@ -15,7 +15,7 @@
   </head>
 
 	<body>
-		<h1> You Got Mail! </h1>
+		<h1><a href='/'>You Got Mail!</a></h1>
 	    <form action='javascript:getFormData()'>
 	    	<input name='firstname' id='firstname' type='text' placeholder='First Name' class='left'/><span class='required'>*</span>
 	    	<input name='middlename' id='middlename' type='text' placeholder='Middle Name'/>
@@ -28,7 +28,7 @@
 	    	<input name='domains' id='domains' type='text' placeholder='Domains (seperate domains by comma)' class='left'/>
 			<input name='submit' type='submit' value='Submit'/>
 		</form>
-		<div id='loading'><img src='https://s-media-cache-ak0.pinimg.com/originals/2d/68/07/2d68078caa90b5daf647642e75813ec8.gif'/></div>
+		<div id='loading'><img src='https://s-media-cache-ak0.pinimg.com/originals/2d/68/07/2d68078caa90b5daf647642e75813ec8.gif'/><span id='warning'>This can take up to 2 minutes depending on the amount of information that must be processed</span></div>
 		<div id='ratings'></div>
 	</body>
 </html>

@@ -142,10 +142,12 @@ def email_generator(usernames, domains=[], links=[]):
 			pass
 
 		# Common emails of people with their own domains
+		# If any of these exist, the chance of it being their email
+		# is highly likely since it's a personal domain
 		stripped_domain = strip_domain(domain)
-		emails['admin@' + stripped_domain] = 0.5
-		emails['info@' + stripped_domain] = 0.5
-		emails['me@' + stripped_domain] = 0.5
+		emails['admin@' + stripped_domain] = max_confidence
+		emails['info@' + stripped_domain] = max_confidence
+		emails['me@' + stripped_domain] = max_confidence
 
 	for link in links:
 		if link:

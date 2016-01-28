@@ -58,7 +58,7 @@ Here, symbols refer to exclusively underscores and periods. The reason for this 
 
 3) These usernames are weighted by content as described above
 
-4) Domains and social media accounts are crawled, scraped, and regex is used to determine whether or not emails exist within them and in the case that they do, they are weighted highly
+4) Domains and social media accounts are crawled, scraped, and regex is used to determine whether or not emails exist within them and in the case that they do, they are weighted highly (generally this part is responsible for taking a long time)
 
 5) Usernames get linked to the most popular email providers (GMail, Yahoo, Hotmail, AOL) as well as personal domains in order to generate emails
 
@@ -91,3 +91,6 @@ Simply run `python server.py` and visit `http://127.0.0.1:5000/`. That's all!
 `mock_email_verifier.py` exposes a mock function to emulate `email_verifier.py` by returning 30% of emails inputted into it as valid
 
 `utils.py` has some common functions used throughout the program
+
+### Points of Improvement
+The time it takes to accomplish step 4 above is the biggest bottleneck for performance. I am open to suggestions as to how this can be improved.

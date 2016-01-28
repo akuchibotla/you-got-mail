@@ -57,6 +57,8 @@ function getFormData() {
 		}
 
 		var maxConfidence = Math.max(...confidence);
+		$('#ratings').append('<a id="search" href="/">Search Again</a>')
+
 		for (var i = 0; i < confidence.length; i++) {
 			confidence[i] = Math.round((confidence[i]/maxConfidence) * 100);
 			$('#ratings').append('<span class="email" id="email' + i.toString() + '" >' + confidence[i].toString() + '</span>');
@@ -66,12 +68,15 @@ function getFormData() {
 			$('#email' + i.toString()).barIndicator({
 				forceAnim: true,
 				horTitle: emails[i],
+				horBarHeight:20,
 				horLabelPos: 'topRight',
-				colorRange:true,
+				labelVisibility: 'hidden',
+				milestones: {},
+				colorRange: true,
 				colorRangeLimits: {
-					optimal: '95-100-green',
-					newRangeOne: '85-100-#4AA64F',
-					newRangeTwo: '50-85-yellow',
+					optimal: '95-100-4AA64F',
+					newRangeOne: '85-100-#B1DC44',
+					newRangeTwo: '50-85-#F8D849',
 					newRangeThree: '25-50-#FFBD5C',
 					critical: '0-25-#FF3333'
 				}
